@@ -16,7 +16,30 @@
 #'
 #' @export
 #'
-#'
 GaussianLogPrior <- function(x, mu, sigma){
   return(sum(-0.5*(x - mu)^2 / sigma^2))
 }
+
+
+#' LaplaceLogPrior
+#'
+#' LaplaceLogPrior is used to generate Laplace prior of regression coefficients.
+#'
+#' @param x Regression Coefficients
+#'
+#' @param mu location parameter
+#'
+#' @param b scale parameter
+#'
+#' @return LaplaceLogPrior returns Laplace prior in log scale.
+#'
+#' @examples
+#'  beta = runif(10)
+#'  LaplaceLogPrior(beta, 0, 1)
+#'
+#' @export
+#'
+LaplaceLogPrior <- function(x, mu, b){
+  return(sum(-abs(x - mu)/b))
+}
+
