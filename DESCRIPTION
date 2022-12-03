@@ -1,5 +1,5 @@
 Package: ModernBayes
-Title: What the Package Does (One Line, Title Case)
+Title: Modern Bayesian Inference Algorithms 
 Version: 0.0.0.9000
 Author: Jeremiah Hauth; Longhao Pang; Aonan Chen
 Maintainer: <hauthj@umich.edu>; <lhpang@umich.edu>; <aonanc@umich.edu>

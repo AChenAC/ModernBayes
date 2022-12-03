@@ -1,28 +1,3 @@
-logisticModel <- function(b, X){
-  if(length(X)>0){
-    if(nrow(t(X))==1){
-      X = matrix(X,nrow=1)
-    }
-    et = exp(-(cbind(rep(1, dim(X)[1]), X) %*% b))
-  }
-  else{
-    et = 0
-  }
-  return(log(1 / (1 + et)))
-}
-
-logPriorFunction <- function(x, mu=0, sigma=1){ # p(b)
-  return(sum(-0.5*(x - mu)^2 / sigma^2))
-}
-
-logLikelihoodFunction <- function(b, X, y) { # logistic probability p(X, y | b)
-  return((sum(logisticModel(b, X[y==1,])) + sum(1-logisticModel(b, X[y!=1,]))))
-}
-
-logPosteriorFunction <- function(b, X, y){ # un-normalized posterior pdf
-  return(logPriorFunction(b, X, y) + logLikelihoodFunction(b, X, y)) # return scalar p(b | X, y)
-}
-
 #' MCMC.beta.generate
 #'
 #' MCMC.beta.generate is used to generate samples of beta coefficients.

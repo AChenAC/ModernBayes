@@ -17,5 +17,5 @@ logPosteriorFunction(b, X, y)
 logPosteriorFunction returns un-normalized posterior pdf.
 }
 \description{
-logPosteriorFunction produces un-normalized posterior pdf
+logPosteriorFunction produces un-normalized posterior pdf based on gaussian prior.
 }
