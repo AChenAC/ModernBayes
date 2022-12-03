@@ -4,14 +4,14 @@
 \alias{GaussianLogPrior}
 \title{GaussianLogPrior}
 \usage{
-GaussianLogPrior(x, mu, sigma)
+GaussianLogPrior(x, mu = 0, sigma = 1)
 }
 \arguments{
 \item{x}{Regression Coefficients}
 
-\item{mu}{Mean}
+\item{mu}{Mean. The default value is 0 if not specified.}
 
-\item{sigma}{Standard Deviation}
+\item{sigma}{Standard Deviation. The default value is 1 if not specified.}
 }
 \value{
 GaussianLogPrior returns gaussian prior in log scale.

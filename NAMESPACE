@@ -2,3 +2,9 @@
 
 export(GaussianLogPrior)
 export(LaplaceLogPrior)
+export(LogisticLogLik)
+export(LogisticModel)
+export(MCMC.beta.generate)
+export(MCMC.prediction)
+export(logPosteriorFunction)
+import(stats)
