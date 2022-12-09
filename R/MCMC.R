@@ -80,9 +80,8 @@ MCMC.beta.generate = function(model, prior, likelihood, posterior, X, y){
 #'
 #' @export
 #'
-MCMC.prediction = function(b, X){
-  pred = X %*% t(betas)
-  mcmc_pred = apply(array(as.numeric((pred-y)>0), dim(pred)), 1, mean)
-  res = as.factor(as.numeric(mcmc_pred>0.5))
-  return(res)
+MCMC.prediction = function(b, X, y){
+  pred = X %*% t(b)
+  mcmc_pred = apply(array(as.numeric((pred-y)>0), dim(pred)), 2, mean)
+  return(factor(as.numeric(mcmc_pred>0.5)))
 }

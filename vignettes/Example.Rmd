@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(ModernBayes)
+library(caret)
 ```
 
 ## Loading example data 
@@ -31,7 +32,7 @@ X = data.matrix(breastCancerDataset[, 3:32]) # raw features
 beta_samples = MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y)
 X = beta_samples$X
 betas = beta_samples$sample_stationary
-y_pred = MCMC.prediction(X, betas)
+y_pred = MCMC.prediction(X, betas, y)
 confusionMatrix(data=y_pred, reference = factor(y))
 ```
 
