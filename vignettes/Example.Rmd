@@ -27,11 +27,15 @@ y = as.double(data.matrix(breastCancerDataset['diagnosis'] == 'M')) # labels
 X = data.matrix(breastCancerDataset[, 3:32]) # raw features
 ```
 
-## Generate beta samples
+## Generate beta samples with MCMC
 ```{r}
 beta_samples = MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y)
 X = beta_samples$X
 betas = beta_samples$sample_stationary
+```
+
+## Prediction of logistic regression using beta samples returned by MCMC
+```{r}
 y_pred = MCMC.prediction(X, betas, y)
 confusionMatrix(data=y_pred, reference = factor(y))
 ```
