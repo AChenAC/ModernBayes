@@ -1,0 +1,38 @@
+---
+title: "Example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ModernBayes)
+```
+
+## Loading example data 
+The example data is downloaded from the [UCI Machine learning repository](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic)).
+```{r}
+breastCancerDataset <- read.csv("breast_cancer_data.csv")
+y = as.double(data.matrix(breastCancerDataset['diagnosis'] == 'M')) # labels
+X = data.matrix(breastCancerDataset[, 3:32]) # raw features
+```
+
+## Generate beta samples
+```{r}
+beta_samples = MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y)
+X = beta_samples$X
+betas = beta_samples$sample_stationary
+y_pred = MCMC.prediction(X, betas)
+confusionMatrix(data=y_pred, reference = factor(y))
+```
+
+

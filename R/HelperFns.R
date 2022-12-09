@@ -16,7 +16,9 @@
 #'
 #' @export
 #'
-GaussianLogPrior <- function(x, mu = 0, sigma = 1){
+GaussianLogPrior <- function(x, mu, sigma){
+  mu = 0
+  sigma = 1
   return(sum(-0.5*(x - mu)^2 / sigma^2))
 }
 
@@ -58,7 +60,15 @@ LaplaceLogPrior <- function(x, mu, b){
 #' @export
 #'
 LogisticModel <- function(b, X){
-  et = exp(-(cbind(1, X) %*% b))
+  if(length(X)>0){
+    if(nrow(t(X))==1){
+      X = matrix(X,nrow=1)
+    }
+    et = exp(-(cbind(rep(1, dim(X)[1]), X) %*% b))
+  }
+  else{
+    et = 0
+  }
   return(log(1 / (1 + et)))
 }
 
@@ -151,5 +161,5 @@ GaussianLogLik <- function(b, X, y, sigma = 1){
 #' @export
 #'
 logPosteriorFunction <- function(b, X, y){ # un-normalized posterior pdf
-  return(logPriorFunction(b, X, y) + logLikelihoodFunction(b, X, y)) # return scalar p(b | X, y)
+  return(GaussianLogPrior(b, X, y) + LogisticLogLik(b, X, y)) # return scalar p(b | X, y)
 }

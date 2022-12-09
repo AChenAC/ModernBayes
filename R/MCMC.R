@@ -19,10 +19,10 @@
 #' @export
 #'
 MCMC.beta.generate = function(model, prior, likelihood, posterior, X, y){
-  #data preprocessing
+  # #data preprocessing
   X = scale(X) # centered features
   pca = prcomp(X, center = TRUE,scale. = TRUE) # pca on centered features (not essential, but helpful)
-  X = pca$x[,1:(ncol(X)/2)] # top 1/2 principle component features
+  X = pca$x[,1:(ncol(X)/2)] # top half principle component features
   d = dim(X)[2]
   #sample initialization
   n = 100000 # number of mcmc samples
@@ -62,23 +62,17 @@ MCMC.beta.generate = function(model, prior, likelihood, posterior, X, y){
       samples[i+1,] = samples[i,]
     }
   }
-  sample_stationary = samples[n_burnin+1:(n+n_burnin),]
-  return(sample_stationary)
+  sample_stationary = samples[n_burnin:(n+n_burnin),]
+  return(list(X = cbind(1, X), sample_stationary=sample_stationary))
 }
 
 #' MCMC.prediction
 #'
-#' MCMC.prediction is used to generate predictive outcomes.
+#' MCMC.prediction is used to generate predictive outcomes of logistic regression.
 #'
-#' @param model Regression model.
+#' @param b beta samples returned by MCMC.beta.generate.
 #'
-#' @param likelihood Log likelihood function.
-#'
-#' @param sample samples of beta coefficients genereated with MCMC.beta.generate.
-#'
-#' @param X Sets of predictors.
-#'
-#' @param selected.clusters Selected cluster labels as a vector.
+#' @param X Selected X covariates returned by MCMC.beta.generate.
 #'
 #' @import stats
 #'
@@ -86,21 +80,9 @@ MCMC.beta.generate = function(model, prior, likelihood, posterior, X, y){
 #'
 #' @export
 #'
-MCMC.prediction = function(model, likelihood, sample, X, selected.clusters){
-  n = nrow(X)
-  k = length(selected.clusters)
-  prob_mat = matrix(NA,n,k)
-
-  #preprocessing
-  X = scale(X) # centered features
-  pca = prcomp(X, center = TRUE,scale. = TRUE) # pca on centered features (not essential, but helpful)
-  X = pca$x[,1:(ncol(X)/2)] # top 1/2 principle component features
-
-  for(i in 1:n){
-    for(j in 1:k){
-      prob_mat[i,j] = likelihood(t(t(sample[i,])),t(X[i,]),selected.clusters[j])
-    }
-  }
-  y_pred = selected.clusters[apply(prob_mat,1,which.max)]
-  return(y_pred)
+MCMC.prediction = function(b, X){
+  pred = X %*% t(betas)
+  mcmc_pred = apply(array(as.numeric((pred-y)>0), dim(pred)), 1, mean)
+  res = as.factor(as.numeric(mcmc_pred>0.5))
+  return(res)
 }
