@@ -10,7 +10,7 @@ devtools::install_github('AChenAC/ModernBayes', build_vignettes = T)
 library("ModernBayes")
 ```
 ## Examples
-Run the following code to get some example usage
+Run the following code to get some examples
 ```{r}
 browseVignettes("ModernBayes")
 ```
