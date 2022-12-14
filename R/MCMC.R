@@ -1,6 +1,6 @@
 #' MCMC.beta.generate
 #'
-#' MCMC.beta.generate is used to generate samples of beta coefficients.
+#' MCMC.beta.generate is used to generate samples of beta coefficients for top half features selected using PCA.
 #'
 #' @param model Regression model.
 #'
@@ -64,24 +64,4 @@ MCMC.beta.generate = function(model, prior, likelihood, posterior, X, y){
   }
   sample_stationary = samples[n_burnin:(n+n_burnin),]
   return(list(X = cbind(1, X), sample_stationary=sample_stationary))
-}
-
-#' MCMC.prediction
-#'
-#' MCMC.prediction is used to generate predictive outcomes of logistic regression.
-#'
-#' @param b beta samples returned by MCMC.beta.generate.
-#'
-#' @param X Selected X covariates returned by MCMC.beta.generate.
-#'
-#' @import stats
-#'
-#' @return MCMC.prediction returns predicted outcome with samples of beta coefficients.
-#'
-#' @export
-#'
-MCMC.prediction = function(b, X, y){
-  pred = X %*% t(b)
-  mcmc_pred = apply(array(as.numeric((pred-y)>0), dim(pred)), 2, mean)
-  return(factor(as.numeric(mcmc_pred>0.5)))
 }

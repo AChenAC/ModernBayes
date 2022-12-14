@@ -23,5 +23,5 @@ MCMC.beta.generate(model, prior, likelihood, posterior, X, y)
 MCMC.beta.generate returns the samples of beta coefficients.
 }
 \description{
-MCMC.beta.generate is used to generate samples of beta coefficients.
+MCMC.beta.generate is used to generate samples of beta coefficients for top half features selected using PCA.
 }

@@ -17,27 +17,42 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(ModernBayes)
 library(caret)
+library(randtoolbox)
 ```
 
 ## Loading example data 
 The example data is downloaded from the [UCI Machine learning repository](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic)).
 ```{r}
 breastCancerDataset <- read.csv("breast_cancer_data.csv")
-y = as.double(data.matrix(breastCancerDataset['diagnosis'] == 'M')) # labels
 X = data.matrix(breastCancerDataset[, 3:32]) # raw features
+y = as.double(data.matrix(breastCancerDataset['diagnosis'] == 'M')) # labels
 ```
 
 ## Generate beta samples with MCMC
 ```{r}
 beta_samples = MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y)
-X = beta_samples$X
-betas = beta_samples$sample_stationary
+MCMC.X = beta_samples$X
+MCMC.betas = beta_samples$sample_stationary
 ```
 
 ## Prediction of logistic regression using beta samples returned by MCMC
 ```{r}
-y_pred = MCMC.prediction(X, betas, y)
+y_pred = Logistic.prediction(MCMC.X, MCMC.betas, y)
 confusionMatrix(data=y_pred, reference = factor(y))
 ```
+
+## Generate beta samples with SVGD
+```{r}
+beta_samples = SVGD.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, X, y)
+SVGD.X = beta_samples$X
+SVGD.betas = beta_samples$beta_samples
+```
+
+## Prediction of logistic regression using beta samples returned by SVGD
+```{r}
+y_pred = Logistic.prediction(SVGD.X, SVGD.betas, y)
+confusionMatrix(data=y_pred, reference = factor(y))
+```
+
 
 

@@ -4,7 +4,7 @@
 \alias{GaussianLogPrior}
 \title{GaussianLogPrior}
 \usage{
-GaussianLogPrior(x, mu = 0, sigma = 1)
+GaussianLogPrior(x, mu, sigma)
 }
 \arguments{
 \item{x}{Regression Coefficients}

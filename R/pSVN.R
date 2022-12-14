@@ -1,6 +1,6 @@
-#' pSVN
+#' pSVN.beta.generate
 #'
-#' pSVN is used to generate samples of beta coefficients.
+#' pSVN.beta.generate is used to generate samples of beta coefficients for top half features selected using PCA.
 #'
 #' @param model Regression model.
 #'
@@ -8,13 +8,14 @@
 #'
 #' @param likelihood Log likelihood function.
 #'
-#' @param posterior Posterior function.
-#'
 #' @param X Sets of predictors.
 #'
 #' @param y Outcome.
 #'
-#' @return MCMC.beta.generate returns the samples of beta coefficients.
+#' @return pSVN.beta.generate returns the samples of beta coefficients.
 #'
 #' @export
 #'
+pSVN.beta.generate = function(model, prior, likelihood, X, y){
+
+}

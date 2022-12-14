@@ -9,8 +9,10 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.2
 Suggests: 
-  stats,
   knitr,
   rmarkdown,
   caret
+Imports: 
+  stats,
+  randtoolbox
 VignetteBuilder: knitr
