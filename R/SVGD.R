@@ -6,19 +6,20 @@
 #'
 #' @param y Outcome.
 #'
+#' @param n_particles number of Stein particles.
+#'
 #' @import randtoolbox
 #'
 #' @return MCMC.beta.generate returns the samples of beta coefficients.
 #'
 #' @export
 #'
-SVGD.beta.generate = function(X, y){
+SVGD.beta.generate = function(X, y, n_particles = 30){
   pca = prcomp(X, center = TRUE,scale. = TRUE)
   X = pca$x
   X = cbind(1, X)[,1:(ncol(X)/2+1)]
   d = dim(X)[2]
   n = length(y)
-  n_particles = 30
 
   sigmoid = function(s) {
     return(1 / (1 + exp(-s)))
