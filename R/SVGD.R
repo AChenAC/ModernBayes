@@ -6,7 +6,9 @@
 #'
 #' @param y Outcome.
 #'
-#' @param n_particles number of Stein particles.
+#' @param n_particles number of Stein particles. Default value is set to 30.
+#'
+#' @param tol Condition for convergence. Default value is 1e-3.
 #'
 #' @import randtoolbox
 #'
@@ -14,7 +16,7 @@
 #'
 #' @export
 #'
-SVGD.beta.generate = function(X, y, n_particles = 30){
+SVGD.beta.generate = function(X, y, n_particles = 30, tol = 1e-3){
   pca = prcomp(X, center = TRUE,scale. = TRUE)
   X = pca$x
   X = cbind(1, X)[,1:(ncol(X)/2+1)]
@@ -67,7 +69,6 @@ SVGD.beta.generate = function(X, y, n_particles = 30){
   }
 
   alpha = 1. # gradient descent step size
-  tol = 1e-5
 
   beta_samples = prior_mu + sobol(n_particles, d, normal=TRUE)*prior_sigma # initial beta particles sampled from prior
   adag = array(0, dim=dim(beta_samples)) # adagrad parameter

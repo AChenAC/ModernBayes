@@ -4,14 +4,16 @@
 \alias{SVGD.beta.generate}
 \title{SVGD.beta.generate}
 \usage{
-SVGD.beta.generate(X, y, n_particles = 30)
+SVGD.beta.generate(X, y, n_particles = 30, tol = 0.001)
 }
 \arguments{
 \item{X}{Sets of predictors.}
 
 \item{y}{Outcome.}
 
-\item{n_particles}{number of Stein particles.}
+\item{n_particles}{number of Stein particles. Default value is set to 30.}
+
+\item{tol}{Condition for convergence. Default value is 1e-3.}
 }
 \value{
 MCMC.beta.generate returns the samples of beta coefficients.
