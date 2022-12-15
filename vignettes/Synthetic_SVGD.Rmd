@@ -97,7 +97,6 @@ get_gradient = function(beta, X, y){ # svgd gradient
 alpha = 1.0 # gradient descent step size
 tol = 1e-5
 
-# beta_samples = sweep(sobol(n_particles, d, normal=TRUE)%*%chol(posteriorSigma), 2, array(posteriorMu))
 beta_samples = sweep(sobol(n_particles, d, normal=TRUE)%*%chol(priorSigma), 2, array(priorMu))
 adag = array(0, dim=dim(beta_samples)) # adagrad parameter
 
