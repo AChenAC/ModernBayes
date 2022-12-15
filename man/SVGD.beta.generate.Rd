@@ -4,15 +4,9 @@
 \alias{SVGD.beta.generate}
 \title{SVGD.beta.generate}
 \usage{
-SVGD.beta.generate(model, prior, likelihood, X, y)
+SVGD.beta.generate(X, y)
 }
 \arguments{
-\item{model}{Regression model.}
-
-\item{prior}{Prior functions.}
-
-\item{likelihood}{Log likelihood function.}
-
 \item{X}{Sets of predictors.}
 
 \item{y}{Outcome.}

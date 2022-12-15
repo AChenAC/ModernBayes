@@ -1,5 +1,5 @@
 ---
-title: "Testing SVGD Convergence with Synthetic Data"
+title: "Synthetic SVGD"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Synthetic SVGD}
@@ -101,7 +101,6 @@ tol = 1e-5
 beta_samples = sweep(sobol(n_particles, d, normal=TRUE)%*%chol(priorSigma), 2, array(priorMu))
 adag = array(0, dim=dim(beta_samples)) # adagrad parameter
 
-# svgd = function(model, prior, likelihood, X, y){
 db = c()
 norm_diff_sigma = c()
 norm_diff_mu = c()

@@ -2,12 +2,6 @@
 #'
 #' SVGD.beta.generate is used to generate samples of beta coefficients for top 1/2 features selected using PCA.
 #'
-#' @param model Regression model.
-#'
-#' @param prior Prior functions.
-#'
-#' @param likelihood Log likelihood function.
-#'
 #' @param X Sets of predictors.
 #'
 #' @param y Outcome.
@@ -18,7 +12,7 @@
 #'
 #' @export
 #'
-SVGD.beta.generate = function(model, prior, likelihood, X, y){
+SVGD.beta.generate = function(X, y){
   pca = prcomp(X, center = TRUE,scale. = TRUE)
   X = pca$x
   X = cbind(1, X)[,1:(ncol(X)/2+1)]

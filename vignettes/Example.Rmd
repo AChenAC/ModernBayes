@@ -43,7 +43,7 @@ confusionMatrix(data=y_pred, reference = factor(y))
 
 ## Generate beta samples with SVGD
 ```{r}
-beta_samples = SVGD.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, X, y)
+beta_samples = SVGD.beta.generate(X, y)
 SVGD.X = beta_samples$X
 SVGD.betas = beta_samples$beta_samples
 ```
@@ -57,7 +57,7 @@ confusionMatrix(data=y_pred, reference = factor(y))
 ## Run time comparison 
 ```{r}
 system.time(MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y))
-system.time(SVGD.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, X, y))
+system.time(SVGD.beta.generate(X, y))
 ```
 
 
