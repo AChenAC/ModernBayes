@@ -54,5 +54,11 @@ y_pred = Logistic.prediction(SVGD.X, SVGD.betas, y)
 confusionMatrix(data=y_pred, reference = factor(y))
 ```
 
+## Run time comparison 
+```{r}
+system.time(MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y))
+system.time(SVGD.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, X, y))
+```
+
 
 

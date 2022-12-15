@@ -1,0 +1,155 @@
+---
+title: "Testing SVGD Convergence with Synthetic Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Synthetic SVGD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include=FALSE}
+library('plot.matrix')
+library('randtoolbox')
+library('pracma')
+library('mvtnorm')
+library("ggplot2")
+library("tidyverse")
+```
+
+## Synthesize Data
+```{r}
+prior_mu = 0.
+prior_sigma = 1.
+
+n_particles = 31
+
+prior_sigma = 1.
+likelihood_sigma = 0.1
+
+n = 32
+d = 8
+
+X = matrix(NA, nrow=n, ncol=d)
+y = matrix(NA, nrow=n, ncol=1)
+t = as.numeric(1:d) * (2 * pi / d)
+for(i in 1:n){
+  y[i,] = rnorm(1)
+  X[i,] = runif(1)*sin(y[i,]*t) + rnorm(d, 0, likelihood_sigma)
+}
+
+b = pinv(X) %*% y
+
+priorSigma = prior_sigma^2*diag(d)
+priorMu = rep(0, d)
+likelihoodSigma = likelihood_sigma^2 * diag(n)
+
+posteriorSigma = inv(inv(priorSigma) + t(X) %*% solve(likelihoodSigma, X))
+posteriorMu = posteriorSigma %*% (t(X) %*% t(inv(likelihoodSigma)) %*% y)
+```
+
+## SVGD
+```{r}
+logPosteriorFunction <- function(b){ # log Pr(b|X,y)
+  return(dmvnorm(b, posteriorMu, posteriorSigma))
+}
+
+gradLogPosteriorFunction = function(beta, X, y){ # d/db log Pr(b|X,y), specific to logistic likelihood and normal prior
+  return(-t(solve(posteriorSigma, t(sweep(beta, 2, posteriorMu)))))
+}
+
+get_gradient = function(beta, X, y){ # svgd gradient
+  grad_posterior = gradLogPosteriorFunction(beta, X, y)
+  Q = t(grad_posterior) %*% grad_posterior / n_particles
+  sign_diff = array(NA, c(n_particles, n_particles, d))
+  for(di in 1:d){
+    sign_diff[,,di] = outer(beta[,di], beta[,di], '-')
+  }
+
+  Qdiff = array(array(sign_diff, c(n_particles^2, d)) %*% Q, c(n_particles, n_particles, d))
+  diffQdiff = sign_diff*Qdiff
+  diffQdiffsum = array(NA, c(n_particles, n_particles))
+
+  for(ni in 1:n_particles){
+    diffQdiffsum[ni,] = apply(array(diffQdiff[ni,,], c(n_particles, d)), 1, sum)
+  }
+  if(n_particles == 1){
+    h = 1
+  }
+  else{
+    h = mean(diffQdiffsum) / log(n_particles)
+  }
+  kern  = exp(-diffQdiffsum / (2*h))
+  gkern = array(NA,c(n_particles, d))
+  for(ni in 1:n_particles){
+    gkern[ni,] = -t(array(Qdiff[,ni,], c(n_particles, d))) %*% array(kern[ni,], c(n_particles, 1))/ h
+  }
+  mgJ = kern %*% grad_posterior + gkern
+  return(mgJ / n_particles)
+}
+
+alpha = 1.0 # gradient descent step size
+tol = 1e-5
+
+# beta_samples = sweep(sobol(n_particles, d, normal=TRUE)%*%chol(posteriorSigma), 2, array(posteriorMu))
+beta_samples = sweep(sobol(n_particles, d, normal=TRUE)%*%chol(priorSigma), 2, array(priorMu))
+adag = array(0, dim=dim(beta_samples)) # adagrad parameter
+
+# svgd = function(model, prior, likelihood, X, y){
+db = c()
+norm_diff_sigma = c()
+norm_diff_mu = c()
+
+
+ptm <- proc.time()
+for(i in 1:3000){
+  delta_beta = get_gradient(beta_samples, X, y) # svgd gradient
+  adag = adag + delta_beta^2 # adagrad parameter
+  beta_samples = beta_samples + alpha*delta_beta / sqrt(adag) #gradient descent via adagrad
+  db_i = norm(delta_beta) / (n_particles*d) # norm of gradient, for convergence criteria
+  sampleSigma = cov(beta_samples)
+  sampleMu = array(apply(beta_samples, 2, mean), c(d, 1))
+
+
+  norm_diff_mu_i = norm(posteriorSigma - sampleSigma)
+  norm_diff_sigma_i = norm(posteriorMu - sampleMu)
+
+  db = c(db, db_i)
+  norm_diff_mu = c(norm_diff_mu, norm_diff_mu_i)
+  norm_diff_sigma = c(norm_diff_sigma, norm_diff_sigma_i)
+
+  if(db_i < tol){ # convergence criteria
+    break
+  }
+}
+fin = proc.time() - ptm
+```
+
+## Plots
+```{r}
+data_frame(idx = 1:length(db), db = db) %>%
+  ggplot(aes(x = idx, y = db)) + geom_line() + geom_point() + scale_y_continuous(trans='log10')
+sampleSigma = cov(beta_samples)
+sampleMu = array(apply(beta_samples, 2, mean), c(d, 1))
+
+cov_max = 1.1*max(abs(posteriorSigma))
+cov_min = -cov_max
+plot(posteriorSigma, limits=c(cov_min,cov_max))
+plot(sampleSigma, limits=c(cov_min,cov_max))
+
+plot(posteriorMu)
+plot(sampleMu)
+
+data_frame(idx = 1:length(norm_diff_sigma), norm_diff_sigma = norm_diff_sigma, norm_diff_mu = norm_diff_mu) %>%
+  gather(key, value, norm_diff_sigma, norm_diff_mu) %>%
+  ggplot(aes(x=idx, y=value, colour=key)) + geom_line(size = 1.2)  + scale_y_continuous(trans='log10')
+```
+
+
+
