@@ -57,7 +57,7 @@ confusionMatrix(data=y_pred, reference = factor(y))
 ## Run time comparison 
 ```{r}
 microbenchmark::microbenchmark(SVGD.beta.generate(X, y))
-system.time(replicate(10, MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y)))
+system.time(replicate(10, MCMC.beta.generate(LogisticModel, GaussianLogPrior, LogisticLogLik, logPosteriorFunction, X, y))) / 10
 ```
 
 
