@@ -132,8 +132,8 @@ fin = proc.time() - ptm
 ```
 
 ## Plots
-```{r}
-data_frame(idx = 1:length(db), db = db) %>%
+```{r warning=FALSE, fig.align ='center', fig.width= 7, fig.height = 5}
+tibble(idx = 1:length(db), db = db) %>%
   ggplot(aes(x = idx, y = db)) + geom_line() + geom_point() + scale_y_continuous(trans='log10')
 sampleSigma = cov(beta_samples)
 sampleMu = array(apply(beta_samples, 2, mean), c(d, 1))
@@ -146,9 +146,9 @@ plot(sampleSigma, limits=c(cov_min,cov_max))
 plot(posteriorMu)
 plot(sampleMu)
 
-data_frame(idx = 1:length(norm_diff_sigma), norm_diff_sigma = norm_diff_sigma, norm_diff_mu = norm_diff_mu) %>%
+tibble(idx = 1:length(norm_diff_sigma), norm_diff_sigma = norm_diff_sigma, norm_diff_mu = norm_diff_mu) %>%
   gather(key, value, norm_diff_sigma, norm_diff_mu) %>%
-  ggplot(aes(x=idx, y=value, colour=key)) + geom_line(size = 1.2)  + scale_y_continuous(trans='log10')
+  ggplot(aes(x=idx, y=value, colour=key)) + geom_line(linewidth = 1.2)  + scale_y_continuous(trans='log10')
 ```
 
 
