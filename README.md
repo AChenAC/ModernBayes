@@ -1,6 +1,6 @@
 # ModernBayes
 
-The goal of ModernBayes is to implement a few state-of-the-art Bayesian inference algorithms including Stein variational gradient descent (SVGD) and projected Stein variational Newton (pSVN).
+The goal of ModernBayes is to implement the state-of-the-art Bayesian inference algorithm - Stein variational gradient descent (SVGD) and compare it with the gold standard Bayesian inference - Markov chain Monte Carlo (MCMC). 
 
 ## Installation 
 Run the following code to install the package:
